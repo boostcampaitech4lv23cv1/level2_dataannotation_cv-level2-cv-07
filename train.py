@@ -53,10 +53,10 @@ def parse_args():
 def do_training(data_dir, model_dir, device, image_size, input_size, num_workers, batch_size,
                 learning_rate, max_epoch, save_interval):
     dataset = SceneTextDataset(data_dir, split='train', image_size=image_size, crop_size=input_size)
-    print(dataset)
+
     dataset = EASTDataset(dataset)
     num_batches = math.ceil(len(dataset) / batch_size)
-    train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = EAST()
@@ -70,7 +70,6 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
         with tqdm(total=num_batches) as pbar:
             for img, gt_score_map, gt_geo_map, roi_mask in train_loader:
                 pbar.set_description('[Epoch {}]'.format(epoch + 1))
-
                 loss, extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
                 optimizer.zero_grad()
                 loss.backward()
