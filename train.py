@@ -26,10 +26,10 @@ def parse_args():
 
     # Conventional args
     parser.add_argument('--data_dir', type=str,
-                        default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/total/ufo/seed1/train.json'))
+                        default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/total'))
                         # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/total/ufo/train.json'))
                         # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/Upstage'))
-#                       # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/ICDAR17_Korean'))
+                        # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/ICDAR17_Korean'))
 
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR',
                                                                         'trained_models'))
@@ -54,11 +54,16 @@ def parse_args():
 
 def do_training(data_dir, model_dir, device, image_size, input_size, num_workers, batch_size,
                 learning_rate, max_epoch, save_interval):
-    dataset = SceneTextDataset(data_dir, split='train', image_size=image_size, crop_size=input_size)
+    train_dataset = SceneTextDataset(data_dir, split='train', image_size=image_size, crop_size=input_size)
+    train_dataset = EASTDataset(train_dataset)
+    train_num_batches = math.ceil(len(train_dataset) / batch_size)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)
 
-    dataset = EASTDataset(dataset)
-    num_batches = math.ceil(len(dataset) / batch_size)
-    train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)
+    val_dataset = SceneTextDataset(data_dir, split='val', image_size=image_size, crop_size=input_size)
+    val_dataset = EASTDataset(val_dataset)
+    val_num_batches = math.ceil(len(val_dataset) / batch_size)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, drop_last=True)
+
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = EAST()
@@ -66,10 +71,10 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[max_epoch // 2], gamma=0.1)
     wandb.watch(model)
-    model.train()
     for epoch in range(max_epoch):
+        model.train()
         epoch_loss, epoch_start = 0, time.time()
-        with tqdm(total=num_batches) as pbar:
+        with tqdm(total=train_num_batches) as pbar:
             for img, gt_score_map, gt_geo_map, roi_mask in train_loader:
                 pbar.set_description('[Epoch {}]'.format(epoch + 1))
                 loss, extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
@@ -81,17 +86,30 @@ def do_training(data_dir, model_dir, device, image_size, input_size, num_workers
                 epoch_loss += loss_val
 
                 pbar.update(1)
-                val_dict = {
+                train_dict = {
                     '[Train] Cls loss': extra_info['cls_loss'], '[Train] Angle loss': extra_info['angle_loss'],
                     '[Train] IoU loss': extra_info['iou_loss']
                 }
-                pbar.set_postfix(val_dict)
-                wandb.log(val_dict)        
+                pbar.set_postfix(train_dict)
+                wandb.log(train_dict)        
 
         scheduler.step()
 
         print('Mean loss: {:.4f} | Elapsed time: {}'.format(
-            epoch_loss / num_batches, timedelta(seconds=time.time() - epoch_start)))
+            epoch_loss / train_num_batches, timedelta(seconds=time.time() - epoch_start)))
+
+        model.eval()
+        with tqdm(total=val_num_batches) as pbar:
+            for img, gt_score_map, gt_geo_map, roi_mask in val_loader:
+                pbar.set_description('[Val Epoch {}]'.format(epoch + 1))
+                loss, extra_info = model.train_step(img, gt_score_map, gt_geo_map, roi_mask)
+                pbar.update(1)
+                val_dict = {
+                    '[Val] Cls loss': extra_info['cls_loss'], '[Val] Angle loss': extra_info['angle_loss'],
+                    '[Val] IoU loss': extra_info['iou_loss']
+                }
+                pbar.set_postfix(val_dict)
+                wandb.log(val_dict)        
 
         if (epoch + 1) % save_interval == 0:
             if not osp.exists(model_dir):
