@@ -3,3 +3,4 @@ wandb/
 trained_models/
 pths/
 predictions/
+train_result/
