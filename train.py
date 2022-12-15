@@ -26,8 +26,10 @@ def parse_args():
 
     # Conventional args
     parser.add_argument('--data_dir', type=str,
-                        default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/Upstage'))
-#                        default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/ICDAR17_Korean'))
+                        default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/total/ufo/seed1/train.json'))
+                        # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/total/ufo/train.json'))
+                        # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/Upstage'))
+#                       # default=os.environ.get('SM_CHANNEL_TRAIN', '/opt/ml/input/data/ICDAR17_Korean'))
 
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR',
                                                                         'trained_models'))
