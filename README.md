@@ -47,7 +47,6 @@
 ![image](https://user-images.githubusercontent.com/56151577/208023624-587455d7-c669-4bc0-a8b8-68ac51206c8e.png)
 
 > 스마트폰으로 카드를 결제하거나, 카메라로 카드를 인식할 경우 자동으로 카드 번호가 입력되는 경우가 있다. 또 주차장에 들어가면 차량 번호가 자동으로 인식되는 경우도 흔히 있다. 이처럼 OCR (Optimal Character Recognition) 기술은 사람이 직접 쓰거나 이미지 속에 있는 문자를 얻은 다음 이를 컴퓨터가 인식할 수 있도록 하는 기술로, 컴퓨터 비전 분야에서 현재 널리 쓰이는 대표적인 기술 중 하나이다.
-
 > OCR task는 글자 검출 (text detection), 글자 인식 (text recognition), 정렬기 (Serializer) 등의 모듈로 이루어져 있으며, 본 대회에서는 '글자 검출' task 만을 해결한다.
 
 ## Dataset
