@@ -1,0 +1,29 @@
+# sweep_config.yaml
+program: train.py
+name: sweep with '[Val] Mean loss' w/ 5 epochs
+project: OCR
+method: bayes
+metric:
+  name: '[Val] Mean loss'
+  goal: minimize
+parameters:
+  batch_size:
+    distribution: int_uniform
+    max: 12
+    min: 6
+  image_size:
+    distribution: int_uniform
+    max: 1024
+    min: 512
+  input_size:
+    values: [256, 512, 1024]
+  learning_rate:
+    distribution: uniform
+    max: 0.004
+    min: 0.0001
+  num_workers:
+    distribution: int_uniform
+    max: 8
+    min: 2
+  max_epoch:
+    value: 5
