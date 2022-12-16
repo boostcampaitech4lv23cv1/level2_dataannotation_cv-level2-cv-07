@@ -40,7 +40,7 @@
 - 김기용_T4020 : 학습 돌려보기
 - 김성수_T4039 : 기업 연계 프로젝트 제안서 작성 리딩
 - 김주엽_T4048 : Augmentation 적용 후 학습 진행, Git review
-- 이    구_T4145 : 데이터 전처리, 실험 초반 setting (train/val loop, random seed, logging 등)
+- 이     구_T4145 : 데이터 전처리, 실험 초반 setting (train/val loop, random seed, logging 등)
 - 이태희_T4172 :  train/val dataset split, WandB Sweep 적용
 
 ## 프로젝트 개요
