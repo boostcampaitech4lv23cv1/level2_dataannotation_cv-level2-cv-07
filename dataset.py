@@ -339,6 +339,8 @@ class SceneTextDataset(Dataset):
         with open(osp.join(root_dir, 'ufo/{}.json'.format(split)), 'r') as f:
             anno = json.load(f)
 
+        self.split = split
+
         self.anno = anno
         self.image_fnames = sorted(anno['images'].keys())
         self.image_dir = osp.join(root_dir, 'images')
@@ -374,6 +376,15 @@ class SceneTextDataset(Dataset):
         funcs = []
         if self.color_jitter:
             funcs.append(A.ColorJitter(0.5, 0.5, 0.5, 0.25))
+            
+        if self.split=='train':
+            funcs.append(A.Equalize())
+            funcs.append(A.FancyPCA())
+            funcs.append(A.Sharpen())
+            funcs.append(A.ChannelShuffle())
+            funcs.append(A.CLAHE(p=0.3))
+            funcs.append(A.RGBShift(r_shift_limit=30, g_shift_limit=30, b_shift_limit=30, p=0.3))
+
         if self.normalize:
             funcs.append(A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)))
         transform = A.Compose(funcs)
