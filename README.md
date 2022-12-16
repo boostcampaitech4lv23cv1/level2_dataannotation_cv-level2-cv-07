@@ -62,7 +62,7 @@ OCR task는 글자 검출 (text detection), 글자 인식 (text recognition), �
 - NVIDIA Tesla V100-SXM2-32GB   
 
 ## 프로젝트 수행 일정
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9cf40993-f038-43a7-b000-c263dcce60dd/Untitled.png)
+<img width="1512" alt="Untitled (2)" src="https://user-images.githubusercontent.com/56151577/208024122-cb7d5507-8c1f-4939-9814-65d7d7472e98.png">
 
 - 기업 연계 프로젝트 제안서 작성
     - 프로젝트 파악 및 연구 동향 조사(12.5 ~ 12.7)
@@ -77,7 +77,7 @@ OCR task는 글자 검출 (text detection), 글자 인식 (text recognition), �
         - EAST 모델 학습
 
 ## Git-Flow
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9e441331-3e19-4d6a-840e-8d83449f6509/Untitled.png)
+![Untitled (3)](https://user-images.githubusercontent.com/56151577/208024180-7d0c3074-312c-4a86-a2dc-c413f75e2758.png)
 
 ## Wrap-Up Report
 [![image](https://user-images.githubusercontent.com/62556539/200262300-3765b3e4-0050-4760-b008-f218d079a770.png)](https://www.notion.so/Wrap-Up-c40db17022f848c89d41551a246985f2)
