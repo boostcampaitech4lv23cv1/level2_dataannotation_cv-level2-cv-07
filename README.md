@@ -51,8 +51,14 @@
 > OCR task는 글자 검출 (text detection), 글자 인식 (text recognition), 정렬기 (Serializer) 등의 모듈로 이루어져 있으며, 본 대회에서는 '글자 검출' task 만을 해결한다.
 
 ## Dataset
-- **Input** : 글자가 포함된 전체 이미지
-- **Output :** bbox 좌표가 포함된 UFO(Upstage  Format for OCR) 형식
+- **Train Dataset**
+    - ICDAR17_Korean: 536 samples
+    - Upstage Dataset: 974 samples
+- **Test Dataset**
+    - 크롤링된 다양한 이미지 (손글씨, 간판, 책표지 등)
+    - Public 150 + Private 150
+- **Input**: 글자가 포함된 전체 이미지
+- **Output**: bbox 좌표가 포함된 UFO(Upstage  Format for OCR) 형식
 
 ## 프로젝트 환경
 모든 실험은 아래의 환경에서 진행되었다.
@@ -83,7 +89,7 @@
 [![image](https://user-images.githubusercontent.com/62556539/200262300-3765b3e4-0050-4760-b008-f218d079a770.png)](https://www.notion.so/Wrap-Up-c40db17022f848c89d41551a246985f2)
 
 ## Result
-- Rank : 11/19
+- Rank : **11**/19
 
 
 |  | f1 score (↑) | recall (↑) | precision (↑) |
